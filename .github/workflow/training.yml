@@ -1,0 +1,44 @@
+name: CPE393-Model-Retraining
+
+# 1. Triggers:
+on:
+  workflow_dispatch: # 1. กดรันเองได้ (Manual trigger)
+  schedule:
+    - cron: '0 0 1 * *' # 2. รันอัตโนมัติทุกวันที่ 1 ของเดือน
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Check out repo
+      uses: actions/checkout@v4
+
+    - name: 2. Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: 3. Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r src/requirements.txt
+        # (pip install kaggle อยู่ใน requirements.txt แล้ว)
+
+    - name: 4. [อัปเดต] Setup Kaggle API
+      env:
+        # (ต้องไปตั้งค่า Secret KAGGLE_JSON ใน GitHub Repo)
+        KAGGLE_JSON: ${{ secrets.KAGGLE_JSON }}
+      run: |
+        mkdir -p ~/.kaggle
+        echo "$KAGGLE_JSON" > ~/.kaggle/kaggle.json
+        chmod 600 ~/.kaggle/kaggle.json
+        
+    - name: 5. Run Model Training Script
+      env:
+        # (สำคัญ: ต้องไปตั้งค่า Secrets ใน GitHub Repo ของคุณ)
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+        MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_USERNAME }}
+        MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_PASSWORD }}
+      run: |
+        python src/train.py

@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+mlflow>=2.0.0
+scikit-learn
+pandas
+lightgbm
+pydantic
