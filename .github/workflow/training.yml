@@ -4,7 +4,7 @@ name: CPE393-Model-Retraining
 on:
   workflow_dispatch: # 1. กดรันเองได้ (Manual trigger)
   schedule:
-    - cron: '0 0 1 * *' # 2. รันอัตโนมัติทุกวันที่ 1 ของเดือน
+    - cron: '0 * * * *' # 2. รันอัตโนมัติทุกวันที่ 1 ของเดือน
 
 jobs:
   train:
