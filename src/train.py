@@ -14,7 +14,7 @@ DATA_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank
 # ----------------------------------------------
 
 # --- 1. ตั้งค่า MLflow ---
-MLFLOW_TRACKING_URI = "https://dagshub.com/plotter.natchanon/Final_MLOPS"
+MLFLOW_TRACKING_URI = "https://dagshub.com/plotter.natchanon/Final_MLOPS.mlflow"
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 mlflow.set_experiment("CPE393-Bank-Marketing") # (เปลี่ยนชื่อ Experiment)
 # -------------------------
