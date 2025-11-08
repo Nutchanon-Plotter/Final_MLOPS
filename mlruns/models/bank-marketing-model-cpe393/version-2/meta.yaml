@@ -1,0 +1,15 @@
+creation_timestamp: 1762531806277
+current_stage: None
+deployment_job_state: null
+description: ''
+last_updated_timestamp: 1762531806277
+model_id: m-7fdfd299096145f8a493a9e4c94faa70
+name: bank-marketing-model-cpe393
+run_id: 2d68eca907e24f68846e439b40870aea
+run_link: ''
+source: models:/m-7fdfd299096145f8a493a9e4c94faa70
+status: READY
+status_message: null
+storage_location: mlflow-artifacts:/633917674707269793/models/m-7fdfd299096145f8a493a9e4c94faa70/artifacts
+user_id: null
+version: 2

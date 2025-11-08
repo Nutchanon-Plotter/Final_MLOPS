@@ -4,73 +4,67 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
+import requests # (เพิ่ม)
+import zipfile # (เพิ่ม)
+import io      # (เพิ่ม)
 
-# 1. กำหนด Features ที่จะใช้ (เลือกมาแค่บางส่วน)
-# นี่คือส่วนที่คุณต้องไปทำ Feature Engineering เพิ่มเติม
+# 1. กำหนด Features (เหมือนเดิม)
 NUMERIC_FEATURES = [
-    'AMT_INCOME_TOTAL',
-    'AMT_CREDIT',
-    'AMT_ANNUITY',
-    'DAYS_BIRTH',
-    'EXT_SOURCE_1',
-    'EXT_SOURCE_2',
-    'EXT_SOURCE_3'
+    'age', 'balance', 'day', 'duration', 'campaign', 'pdays', 'previous'
 ]
-
 CATEGORICAL_FEATURES = [
-    'NAME_CONTRACT_TYPE',
-    'CODE_GENDER',
-    'FLAG_OWN_CAR',
-    'FLAG_OWN_REALTY'
+    'job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'poutcome'
 ]
 
-def load_and_preprocess_data(data_path):
+# 2. แก้ไขฟังก์ชัน load_and_preprocess_data (อัปเดต)
+def load_and_preprocess_data(data_url):
     """
-    โหลดข้อมูล, เลือก Features, และสร้าง Preprocessing Pipeline
+    โหลดข้อมูลจาก URL (bank.zip) และอ่านไฟล์ 'bank-full.csv' ที่อยู่ข้างใน
     """
     try:
-        df = pd.read_csv(data_path)
-    except FileNotFoundError:
-        print(f"Error: ไม่พบไฟล์ข้อมูลที่ {data_path}")
-        print("โปรดดาวน์โหลดข้อมูล 'application_train.csv' จาก Kaggle แล้ววางไว้ใน 'data/raw/'")
+        # 1. ดาวน์โหลด .zip file จาก URL
+        r = requests.get(data_url)
+        r.raise_for_status() # เช็กว่าดาวน์โหลดสำเร็จ
+        
+        # 2. เปิด .zip file จากใน memory
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        
+        # 3. อ่านไฟล์ 'bank-full.csv' ที่อยู่ข้างใน zip
+        with z.open('bank-full.csv') as f:
+            df = pd.read_csv(f, sep=';') # ระบุ ; เป็นตัวคั่น
+
+    except Exception as e:
+        print(f"Error loading data from URL: {e}")
         return None, None, None, None, None
 
-    # เลือกเฉพาะ Features ที่กำหนด + TARGET
+    # 3. แปลง Target (y) (เหมือนเดิม)
+    df['TARGET'] = df['y'].map({'yes': 1, 'no': 0})
+    
     all_features = NUMERIC_FEATURES + CATEGORICAL_FEATURES
-    
-    # กรองเอาเฉพาะ GENDER ที่เป็น M หรือ F (ข้อมูลมี XNA)
-    df = df[df['CODE_GENDER'].isin(['M', 'F'])]
-    
     df_selected = df[all_features + ['TARGET']]
 
-    # 2. แบ่งข้อมูล
+    # 4. แบ่งข้อมูล (เหมือนเดิม)
     X = df_selected.drop('TARGET', axis=1)
     y = df_selected['TARGET']
-    
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-    # 3. สร้าง Preprocessing Pipelines
-    # Pipeline สำหรับ Numeric Features
+    # 5. สร้าง Preprocessing Pipelines (เหมือนเดิม)
     numeric_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='median')), # เติมค่าว่างด้วย median
-        ('scaler', StandardScaler())                 # Scale ข้อมูล
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler())
     ])
-
-    # Pipeline สำหรับ Categorical Features
     categorical_transformer = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='most_frequent')), # เติมค่าว่างด้วยค่าที่พบบ่อยสุด
-        ('onehot', OneHotEncoder(handle_unknown='ignore'))  # ทำ One-Hot Encoding
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))
     ])
 
-    # 4. รวม Pipelines ทั้งหมดด้วย ColumnTransformer
+    # 6. รวม Pipelines (เหมือนเดิม)
     preprocessor = ColumnTransformer(
         transformers=[
             ('num', numeric_transformer, NUMERIC_FEATURES),
             ('cat', categorical_transformer, CATEGORICAL_FEATURES)
         ])
 
-    print("Preprocessing pipeline created successfully.")
+    print("Preprocessing pipeline created successfully for Bank dataset.")
     
-    # ส่งคืนข้อมูลที่ยังไม่ถูก transform
-    # เพราะเราจะรวม preprocessor เข้ากับ model ใน 'train.py'
     return X_train, X_val, y_train, y_val, preprocessor

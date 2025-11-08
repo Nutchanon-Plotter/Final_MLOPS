@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/633917674707269793/8526f4e937da43e98dc44c753e012083/artifacts
+end_time: 1762530422386
+entry_point_name: ''
+experiment_id: '633917674707269793'
+lifecycle_stage: active
+run_id: 8526f4e937da43e98dc44c753e012083
+run_name: LightGBM
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762530419058
+status: 3
+tags: []
+user_id: nutchanonboonyato

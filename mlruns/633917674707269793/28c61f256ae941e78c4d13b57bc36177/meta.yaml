@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/633917674707269793/28c61f256ae941e78c4d13b57bc36177/artifacts
+end_time: 1762530419052
+entry_point_name: ''
+experiment_id: '633917674707269793'
+lifecycle_stage: active
+run_id: 28c61f256ae941e78c4d13b57bc36177
+run_name: RandomForest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762530415460
+status: 3
+tags: []
+user_id: nutchanonboonyato

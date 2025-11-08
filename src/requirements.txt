@@ -3,4 +3,4 @@ scikit-learn
 mlflow>=2.0.0
 lightgbm
 numpy
-kaggle
+requests

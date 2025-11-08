@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # ตั้งชื่อ Service ของเรา
+  api:
+    # บอก Compose ว่าให้ไป Build Image จาก 'Dockerfile' 
+    # ที่อยู่ในโฟลเดอร์ './api'
+    build: ./api 
+    
+    ports:
+      # แมพพอร์ต 8000 บนเครื่องเรา ไปยังพอร์ต 80 ใน Container
+      - "8000:80" 
+      
+    environment:
+      # ตั้งค่า Environment Variable ให้ Container
+      # (ใช้ host.docker.internal เพื่อชี้จาก Container กลับมายังเครื่อง Host)
+      - MLFLOW_TRACKING_URI=http://host.docker.internal:5000 
+    
+    # (หมายเหตุ: ถ้าใช้ Linux ให้แก้ MLFLOW_TRACKING_URI เป็น http://172.17.0.1:5000)
